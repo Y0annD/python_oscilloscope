@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import re
+import re,  tkFileDialog
 from Tkinter import Tk, Frame
 
 from screen import Screen
@@ -83,7 +83,9 @@ class Oscilloscope(Frame):
         Sauvegarde la courbe
         """
         print "Oscilloscope.save()"
-        file = open("save",'w')
+        #        file = open("save",'w')
+        filename = tkFileDialog.asksaveasfilename(title="Sauvegarder un graphe", filetypes=[('oscillographe file','.osc'),('all files', '.*')])
+        file = open(filename,'w')
         # sauvegarde au format temps|amplitude|frequence|phase
         file.write(str(self.time)+'|'+str(self.control_X.scale_A.get())+'|'+str(self.control_X.scale_F.get())+'|'+str(self.control_X.scale_P.get())+'\r\n')
         # fermeture du fichier
@@ -94,20 +96,22 @@ class Oscilloscope(Frame):
         Charger la courbe
         """
         print "Oscilloscope.load()"
-        file = open("save",'r')
-        data = file.readline().rstrip('\r\n')
-        regex = re.compile('^[0-9]{1,2}\|[0-9]{1,2}\|[0-9]{1,2}\|[0-9]{1,2}$')
-        if(regex.match(data)):
-           print "Format ok, loading\n"
-           a = re.split('\|+', data, flags = re.IGNORECASE)
-           self.control_time.scale_time.set(int(a[0]))
-           self.control_X.scale_A.set(int(a[1]))
-           self.control_X.scale_F.set(int(a[2]))
-           self.control_X.scale_P.set(int(a[3]))
-        else:
-            print "Fichier incorrect"
-
-        file.close()
+        file = tkFileDialog.askopenfile(title="Ouvrir un graphe", filetypes=[('oscillographe file','.osc'),('all files', '.*')])
+        if file:
+            data = file.readline().rstrip('\r\n')
+            # vérification que le texte est en accord avec le format
+            regex = re.compile('^[0-9]{1,2}\|[0-9]{1,2}\|[0-9]{1,2}\|[0-9]{1,2}$')
+            if(regex.match(data)):
+                print "Format ok, loading\n"
+                a = re.split('\|+', data, flags = re.IGNORECASE)
+                self.control_time.scale_time.set(int(a[0]))
+                self.control_X.scale_A.set(int(a[1]))
+                self.control_X.scale_F.set(int(a[2]))
+                self.control_X.scale_P.set(int(a[3]))
+            else:
+                print "Fichier incorrect"
+                
+            file.close()
         
 if __name__ == "__main__":
     root = Tk()
