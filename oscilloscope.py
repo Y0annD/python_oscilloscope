@@ -30,23 +30,31 @@ class Oscilloscope(Frame):
         self.master.title("Oscilloscope")
         # Modele
         self.time = 0
-        self.signal = None
+        # gestion des signaux X et Y
+        self.signal_X = None
+        self.signal_Y = None
         # Vues
         self.view = Screen(parent=self)
         # Controleurs
         self.control_time = TimeBase(parent=self)
-        self.control_X = Generator(parent=self)
+        self.control_X = Generator(self,'X')
+        self.control_Y = Generator(self, 'Y')
+
+
         # menu
         menuBar = MenuBar(self)
         menuBar.pack(fill="both");
+
+
         # Affichage Vues, Controleurs
         self.view.pack(fill="both", expand=1)
         self.control_time.pack(side="left")
         self.control_X.pack(side="left")
+        self.control_Y.pack(side="left")
         self.configure(width=width, height=height)
-        
-        
+        self.master.protocol("WM_DELETE_WINDOW", self.quitter)
 
+        
     def get_time(self):
         """
         recuperer la valeur courante de la base de temps
@@ -62,6 +70,14 @@ class Oscilloscope(Frame):
         if self.time != time:
             self.time = time
             self.control_X.update_signal(None)
+
+
+    def plot_all(self):
+        """
+        affiche tous les signaux
+        """
+        self.update_view('X',self.control_X.signal)
+        self.update_view('Y',self.control_Y.signal)
 
     def update_view(self, name="X", signal=None):
         """ demande d'affichage de signal
@@ -136,7 +152,9 @@ class Oscilloscope(Frame):
             print "Oscilloscope.quitter()"
             self.quit()
 
+
 if __name__ == "__main__":
     root = Tk()
     oscillo = Oscilloscope(root)
+
     root.mainloop()

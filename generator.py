@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from Tkinter import Tk, Frame, Scale
+from Tkinter import Tk, Frame, Scale, Checkbutton, IntVar
 from math import cos, sin, pi
 
 
@@ -23,8 +23,13 @@ class Generator(Frame):
         self.configure(bd=1, relief="sunken")
         self.parent = parent
         self.name = name
+        self.drawVar = IntVar()
+        self.signal = None
 
-        # c
+        self.draw = Checkbutton(self,text="Afficher "+self.name, selectcolor=eval('self.parent.view.color_'+name), variable=self.drawVar, onvalue = 1, offvalue = 0, command=self.parent.plot_all)
+        self.draw.pack()
+        self.draw.select()
+
         self.scale_A = Scale(self, length=100, orient="horizontal",
                 label=name + " Amplitude", showvalue=1, from_=0, to=10,
                 tickinterval=1, command=self.update_signal)
@@ -53,6 +58,7 @@ class Generator(Frame):
         amp = scaling*self.scale_A.get()
         signal = self.generate_signal(a=amp,f=self.scale_F.get(),
                                       p=self.scale_P.get())
+        self.signal = signal
         if not isinstance(self.parent, Tk):
             self.parent.update_view(self.name, signal)
         return signal

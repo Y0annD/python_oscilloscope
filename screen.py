@@ -26,7 +26,8 @@ class Screen(Canvas):
 
         self.signal_X = None
         self.color_X = "red"
-        self.signal = None
+        self.signal_Y = None
+        self.color_Y = "green"
 
         self.grid = []
 
@@ -83,7 +84,9 @@ class Screen(Canvas):
             self.grid.append(self.create_line(10, (self.height/2)+i*nY,self.width, (self.height/2)+i*nY))
             
             self.grid.append(self.create_line(10, (self.height/2)-i*nY,self.width, (self.height/2)-i*nY))
-        
+
+
+            
     def plot_signal(self, name, signal=None):
         """
         Affichage de signal
@@ -93,12 +96,27 @@ class Screen(Canvas):
         """
         print "Screen.plot_signal()"
         self.draw_grid(self.width/(self.parent.get_time()),self.height/10)
+        draw_X = self.parent.control_X.drawVar.get()
+        draw_Y = self.parent.control_Y.drawVar.get()
+
         if signal and len(signal) > 1:
-            if name == "X":
-                if self.signal_X > -1:
+            if name == "X" :
+                if draw_X:
+                    if self.signal_X > -1:
+                        self.delete(self.signal_X)
+                    plot = [(x*self.width, y*self.height + self.height/2) for (x, y) in signal]
+                    self.signal_X = self.create_line(plot, fill=self.color_X, smooth=1, width=3)
+                else:
                     self.delete(self.signal_X)
-                plot = [(x*self.width, y*self.height + self.height/2) for (x, y) in signal]
-                self.signal_X = self.create_line(plot, fill=self.color_X, smooth=1, width=3)
+            if name == "Y":
+                if draw_Y:
+                    if self.signal_Y > -1:
+                        self.delete(self.signal_Y)
+                    plot = [(x*self.width, y*self.height + self.height/2) for (x, y) in signal]
+                    self.signal_Y = self.create_line(plot, fill=self.color_Y, smooth=1, width=3)
+                else:
+                    self.delete(self.signal_Y)
+
 
 if __name__ == "__main__":
     root = Tk()
