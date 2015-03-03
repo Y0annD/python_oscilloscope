@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import re,  tkFileDialog
+import re,  tkFileDialog, tkMessageBox
 from Tkinter import Tk, Frame
 
 from screen import Screen
@@ -38,7 +38,7 @@ class Oscilloscope(Frame):
         self.control_X = Generator(parent=self)
         # menu
         menuBar = MenuBar(self)
-        menuBar.pack();
+        menuBar.pack(fill="both");
         # Affichage Vues, Controleurs
         self.view.pack(fill="both", expand=1)
         self.control_time.pack(side="left")
@@ -78,16 +78,26 @@ class Oscilloscope(Frame):
             self.view.plot_signal(name, signal)
         return signal
 
+
+    
+    def about(self):
+        """
+        Affiche les infos des créateurs
+        """
+        tkMessageBox.showinfo('Super oscilloscope',
+                                 'v0.1.3\n\n\tYoann Diquélou\n\tLeïla Toscer\n\n# Copyright (C) 2015 by ENIB-CAI')
+
     def save(self):
         """
         Sauvegarde la courbe
+        sauvegarde au format temps|amplitude|frequence|phase
         """
         print "Oscilloscope.save()"
-        #        file = open("save",'w')
+
         filename = tkFileDialog.asksaveasfilename(title="Sauvegarder un graphe", filetypes=[('oscillographe file','.osc'),('all files', '.*')])
         file = open(filename,'w')
-        # sauvegarde au format temps|amplitude|frequence|phase
-        file.write(str(self.time)+'|'+str(self.control_X.scale_A.get())+'|'+str(self.control_X.scale_F.get())+'|'+str(self.control_X.scale_P.get())+'\r\n')
+    
+        file.write(str(self.time)+'|'+str(self.control_X.scale_A.get())+'|'+str(self.control_X.scale_F.get())+'|'+str(self.control_X.scale_P.get())+'|\r\n')
         # fermeture du fichier
         file.close()
 
@@ -100,7 +110,8 @@ class Oscilloscope(Frame):
         if file:
             data = file.readline().rstrip('\r\n')
             # vérification que le texte est en accord avec le format
-            regex = re.compile('^[0-9]{1,2}\|[0-9]{1,2}\|[0-9]{1,2}\|[0-9]{1,2}$')
+#            regex = re.compile('^[0-9]{1,2}\|[0-9]{1,2}\|[0-9]{1,2}\|[0-9]{1,2}$')
+            regex = re.compile('^([0-9]{1,2}\|){4}$')
             if(regex.match(data)):
                 print "Format ok, loading\n"
                 a = re.split('\|+', data, flags = re.IGNORECASE)
@@ -110,9 +121,21 @@ class Oscilloscope(Frame):
                 self.control_X.scale_P.set(int(a[3]))
             else:
                 print "Fichier incorrect"
+                tkMessageBox.showerror('ERREUR',
+            'Entrez un fichier valide, merci.')
                 
             file.close()
-        
+
+
+    def quitter(self):
+        """
+        Affiche une boite de dialogue pour que l'utilisateur confirme son souhait de quitter
+        """
+        if tkMessageBox.askyesno('Quitter',
+                                 'voulez-vous quitter?'):
+            print "Oscilloscope.quitter()"
+            self.quit()
+
 if __name__ == "__main__":
     root = Tk()
     oscillo = Oscilloscope(root)
