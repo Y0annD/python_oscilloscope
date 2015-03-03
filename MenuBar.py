@@ -10,7 +10,7 @@ class MenuBar(Frame):
     def __init__(self, parent=None):
         Frame.__init__(self, borderwidth=2)
         mbuttonFile = Menubutton(self, text="Fichier")
-        mbuttonFile.pack()
+        mbuttonFile.pack(side="left")
         menuFile = Menu(mbuttonFile)
         menuFile.add_command(label="Sauvegarder",
                              command=parent.save)
@@ -18,6 +18,14 @@ class MenuBar(Frame):
                              command=parent.load)
         
         menuFile.add_command(label="Quitter",
-                             command=parent.quit)
+                             command=parent.quitter)
         mbuttonFile.configure(menu=menuFile)
-        
+
+        mbuttonFileBis = Menubutton(self, text="?")
+
+        menuFileBis = Menu(mbuttonFileBis)
+        menuFileBis.add_command(label="A propos",
+                                command=parent.about)
+        mbuttonFileBis.configure(menu = menuFileBis)
+
+        mbuttonFileBis.pack(side="left")
