@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from Tkinter import Tk, Frame, Scale
+from Tkinter import Tk, Frame, Scale, Checkbutton
 
 
 class TimeBase(Frame):
@@ -21,6 +21,11 @@ class TimeBase(Frame):
                 label="Temps", showvalue=1, from_=1, to=10,
                 tickinterval=1, command=self.update)
         self.scale_time.pack(expand="yes", fill="both")
+
+        # choix d'afficher lissajoux ou pas
+        self.check = Checkbutton(self,text="Afficher lissajou", selectcolor=self.parent.lissajoux.color_XY,  command=self.parent.plot_all, variable=self.parent.drawXY, onvalue = 1, offvalue = 0)
+        self.check.pack(side="top",expand="yes", fill="x")
+        self.check.select()
 
     def get_time(self):
         """

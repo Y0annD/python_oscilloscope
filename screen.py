@@ -28,6 +28,8 @@ class Screen(Canvas):
         self.color_X = "red"
         self.signal_Y = None
         self.color_Y = "green"
+        self.signal_XY = None
+        self.color_XY = "#ff00ff"
 
         self.grid = []
 
@@ -45,7 +47,7 @@ class Screen(Canvas):
             self.height = event.height
             # on redessine la grille
             self.draw_grid(self.width/(self.parent.get_time()),self.height/10)
-            self.plot_signal(self.signal)
+
             
     def draw_grid(self, nX=10, nY=10):
         """
@@ -95,7 +97,7 @@ class Screen(Canvas):
         signal : liste des couples (temps,elongation) ou (elongation X, elongation Y)
         """
         print "Screen.plot_signal()"
-        self.draw_grid(self.width/(self.parent.get_time()),self.height/10)
+        self.draw_grid(self.width/10,self.height/10)
         draw_X = self.parent.control_X.drawVar.get()
         draw_Y = self.parent.control_Y.drawVar.get()
 
@@ -116,7 +118,11 @@ class Screen(Canvas):
                     self.signal_Y = self.create_line(plot, fill=self.color_Y, smooth=1, width=3)
                 else:
                     self.delete(self.signal_Y)
-
+            if name == 'XY':
+                self.delete(self.signal_XY)
+                if self.parent.drawXY.get()==1:
+                    plot = [(x*self.width+self.width/2, y*self.height + self.height/2) for (x, y) in signal]
+                    self.signal_XY = self.create_line(plot, fill=self.color_XY, smooth=1, width=3)
 
 if __name__ == "__main__":
     root = Tk()

@@ -61,6 +61,7 @@ class Generator(Frame):
         self.signal = signal
         if not isinstance(self.parent, Tk):
             self.parent.update_view(self.name, signal)
+        self.parent.plot_all()
         return signal
 
     def generate_signal(self, a=1.0, f=2.0, p=0):
