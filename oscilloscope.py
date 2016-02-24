@@ -4,7 +4,7 @@
 import re,  tkFileDialog, tkMessageBox, json
 from Tkinter import Tk, Frame, Grid, IntVar
 
-from widget_lissajou import Widget_lissajou
+from lissajou import Lissajou
 from screen import Screen
 from timebase import TimeBase
 from generator import Generator
